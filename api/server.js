@@ -23,12 +23,12 @@ const usersRouter = require('./users/users-router.js');
 const server = express();
 
 server.use(session({
-  name: 'foo',
-  secret: 'keep it secret', // .env file
+  name: 'chocolatechip',
+  secret: 'shh', // .env file
   cookie: {
     maxAge: 1000 * 60 * 60,
     secure: false, // if true, only works over TLS/https
-    httpOnly: false, // if true, cookie not in document
+    httpOnly: true, // if true, cookie not in document
   },
   resave: false, // required by some session stores
   saveUninitialized: false, // session not saved automatically

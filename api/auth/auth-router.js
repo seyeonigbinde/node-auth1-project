@@ -30,20 +30,33 @@ const { checkPasswordLength,
     "message": "Password must be longer than 3 chars"
   }
  */
-router.post('/register', checkUsernameFree, async (req, res, next) => {
-  try {
+// router.post('/register', checkUsernameFree, checkPasswordLength, async (req, res, next) => {
+//   try {
+//     const { username, password } = req.body
+//     const hash = bcrypt.hashSync(
+//       password, // plain text
+//       8, // number of rounds of hashing 2 ^ 8
+//     )
+//     const newUser = { username, password: hash }
+//     const createdUser = await User.add(newUser)
+
+//     res.json(createdUser)
+//   } catch (err) {
+//     next(err)
+//   }
+// })
+
+router.post('/register', checkUsernameFree, checkPasswordLength,  (req, res, next) => {
     const { username, password } = req.body
     const hash = bcrypt.hashSync(
       password, // plain text
       8, // number of rounds of hashing 2 ^ 8
     )
-    const newUser = { username, password: hash }
-    const createdUser = await User.add(newUser)
-
-    res.json(createdUser)
-  } catch (err) {
-    next(err)
-  }
+    User.add({username, password: hash})
+      .then(saved => {
+        res.json(saved).status(201)
+      })
+   .catch (next) 
 })
 
 
@@ -63,7 +76,7 @@ router.post('/register', checkUsernameFree, async (req, res, next) => {
   }
  */
 
-router.post('/login', async (req, res, next) => {
+router.post('/login',  checkUsernameExists, async (req, res, next) => {
   try {
     const { username, password } = req.body
     const [user] = await User.findBy({ username })
